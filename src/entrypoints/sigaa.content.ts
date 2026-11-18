@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from '../App.vue';
 
 import { detectPage, Pages} from '../core/detector.ts';
+import { getScreen } from "../screens/index.ts";
 
 function waitForBody(): Promise<void> {
     if (document.readyState !== 'loading' && document.body) {
@@ -21,7 +22,7 @@ export default defineContentScript({
         await waitForBody();
 
         const currentPage = detectPage();
-        if (currentPage !== Pages.unknown) {
+        if (getScreen(currentPage)) {
             wrapOriginalDOM();
             const ui = await createShadowRootUi(ctx, {
                 name: 'prettygaa-dom',

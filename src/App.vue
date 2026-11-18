@@ -1,48 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Pages } from "./core/detector.ts";
+import { getScreen } from "./screens";
 
-const props = defineProps<{
-  page: Pages;
-}>();
-
-const page = computed(() => {
-  switch (props.page) {
-    case Pages.login:
-      return 'Login';
-    case Pages.portal:
-      return 'Portal';
-    case Pages.virtualClass:
-      return 'VirtualClass';
-    default:
-      return 'Desconhecido';
-  }
-});
+const props = defineProps<{ page: Pages; }>();
+const currentScreen = computed(() => getScreen(props.page));
 </script>
 
 <template>
-  <div class="hello-wrapper">
-    <h1> {{ page }} </h1>
-  </div>
+  <component :is="currentScreen"/>
 </template>
-
-<style scoped>
-.hello-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-
-h1 {
-  background: white;
-  color: darkblue;
-  padding: 24px 36px;
-  border: 1px solid lightgray;
-  border-radius: 16px;
-  box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.2);
-  pointer-events: auto;
-}
-</style>
