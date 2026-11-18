@@ -12,6 +12,8 @@ const page = computed(() => {
       return 'Login';
     case Pages.portal:
       return 'Portal';
+    case Pages.virtualClass:
+      return 'VirtualClass';
     default:
       return 'Desconhecido';
   }

@@ -2,6 +2,7 @@ export enum Pages {
     unknown = 'unknown',
     login = 'login',
     portal = 'portal',
+    virtualClass = 'virtualClass',
 }
 
 interface PagesInterface {
@@ -17,6 +18,11 @@ const PagesRegistry: PagesInterface[] = [
     {
         page: Pages.portal,
         matches: doc => Boolean(doc.getElementById('portal-docente'))
+    },
+    {
+        page: Pages.virtualClass,
+        matches: doc =>
+            Boolean(doc.getElementById('barraDireita'))
     }
 ]
 
