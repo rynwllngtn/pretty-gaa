@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import App from '../App.vue';
 
-import { detectPage, Pages} from '../core/detector.ts';
+import { detectPage } from '../core/detector.ts';
 import { getScreen } from "../screens/index.ts";
 
 function waitForBody(): Promise<void> {
@@ -30,7 +30,9 @@ export default defineContentScript({
                 anchor: 'body',
 
                 onMount(container): any {
-                    return createApp(App, { page: currentPage }).mount(container);
+                    const app = createApp(App, { page: currentPage });
+                    app.mount(container);
+                    return app;
                 },
                 onRemove(app) {
                     app?.unmount();
