@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from '../App.vue';
 
 import { detectPage } from '../core/detector.ts';
-import { getScreen } from "../screens/index.ts";
+import { getScreen } from "@/screens";
 
 function waitForBody(): Promise<void> {
     if (document.readyState !== 'loading' && document.body) {
@@ -52,7 +52,11 @@ function wrapOriginalDOM() {
 
     const wrapper = document.createElement('div');
     wrapper.id = originalId;
-    wrapper.style.opacity = '0.2';
+    wrapper.style.position = 'fixed';
+    wrapper.style.inset = '0';
+    wrapper.style.opacity = '0';
+    wrapper.style.overflow = 'hidden';
+    wrapper.style.pointerEvents = 'none';
 
     const nodes = Array.from(document.body.childNodes).filter(
         node => node.nodeName !== 'SCRIPT'

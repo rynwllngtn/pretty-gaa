@@ -2,118 +2,91 @@
 import { ref } from 'vue';
 import { setLoginInput, setPasswordInput, submitLoginInput } from "./login.parser.ts";
 
-const cpf = ref("");
+const user = ref("");
 const password = ref("");
 
 function clickSubmit() {
-    setLoginInput(cpf.value);
+    setLoginInput(user.value);
     setPasswordInput(password.value);
     submitLoginInput();
 }
+
+const integratedSystems = [
+    { name: 'SIGAA', details: 'Gestão Acadêmica' },
+    { name: 'SIPAC', details: 'Administrativo' },
+    { name: 'SIGRH', details: 'Recursos Humanos' },
+    { name: 'SIGEleição', details: 'Processos Eleitorais' },
+    { name: 'SIGAdmin', details: 'Admin. e Comunicação' }
+];
+
+const registrationProfiles = [
+    { label: 'Aluno', kind: 'student' },
+    { label: 'Prof. / Func.', kind: 'staff' },
+    { label: 'Familiares', kind: 'family' }
+];
 </script>
 
 <template>
-    <div class="login-wrapper">
-        <section class="login-section">
+    <div class="login-layout">
+        <aside>
+            <header class="sigaa-identification">
+                <div class="sigaa-name">
+                    <strong>SIGAA</strong>
+                    <span>UFCG</span>
+                </div>
+                <p class="sigaa-description">Sistema Integrado de Gestão de Atividades Acadêmicas.</p>
+            </header>
+            <nav class="sigaa-systems">
+                <h2 class="systems-title">Sistemas Integrados</h2>
+                <ul class="systems-list">
+                    <li v-for="system in integratedSystems">
+                        <a class="system-item">
+                            <strong> {{ system.name }} </strong>
+                            <span> {{ system.details }} </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <nav class="sigaa-registration">
+                <h2 class="registration-title">Primeiro Acesso</h2>
+                <ul class="registration-list">
+                    <li v-for="profile in registrationProfiles">
+                        <a class="profile-item"> {{ profile.label }} </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer>
+                <span>STI • (83) 2101-1358</span>
+                <span class="version-tag">v4.20.11-ufcg</span>
+            </footer>
+        </aside>
+        <main>
             <form class="login-form" @submit.prevent="clickSubmit">
+                <header class="login-title">
+                    <h1>Entrar no Sistema</h1>
+                    <p>Informe seu usuário e senha para continuar.</p>
+                </header>
                 <div class="form-field">
-                    <label for="login-cpf">CPF</label>
-                    <input v-model="cpf" id="login-cpf" type="text" placeholder="000.000.000-00" required/>
+                    <div class="field-label">
+                        <label for="login-user">Usuário</label>
+                        <a class="text-link">Esqueceu o login?</a>
+                    </div>
+                    <input v-model="user" id="login-user" type="text" placeholder="Usuário ou CPF" required/>
                 </div>
                 <div class="form-field">
-                    <label for="login-password">Senha</label>
+                    <div class="field-label">
+                        <label for="login-password">Senha</label>
+                        <a class="text-link">Esqueceu a senha?</a>
+                    </div>
                     <input v-model="password" id="login-password" type="password" placeholder="••••••••" required/>
                 </div>
                 <button class="submit-btn" type="submit">Entrar</button>
             </form>
-        </section>
+            <footer class="login-footer"> SIGAA • STI UFCG • © 2006–2026 UFRN </footer>
+        </main>
     </div>
 </template>
 
 <style scoped>
-* {
-    box-sizing: border-box;
-}
 
-.login-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-}
-
-.login-section {
-    width: 100%;
-    max-width: 380px;
-    background: white;
-    padding: 36px 24px;
-    border: 1px solid lightgray;
-    border-radius: 16px;
-    box-shadow: 8px 12px 32px rgba(0, 0, 0, 0.2);
-    pointer-events: auto;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-
-    .form-field {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    & label {
-        font-size: 14px;
-        font-weight: 600;
-        color: dimgrey;
-    }
-
-    & input {
-        padding: 10px 12px;
-        color: darkblue;
-        background: white;
-        border: 1px solid lightgray;
-        border-radius: 8px;
-        outline: none;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
-
-        &::placeholder {
-            color: darkgray;
-        }
-
-        &:hover {
-            border-color: darkgray;
-        }
-
-        &:focus {
-            border-color: dodgerblue;
-            box-shadow: 0 0 4px 4px rgb(from dodgerblue r g b / 0.2);
-        }
-    }
-
-    & .submit-btn {
-        margin-top: 16px;
-        padding: 12px 16px;
-        font-weight: 600;
-        color: white;
-        background: dodgerblue;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.15s ease, transform 0.1s ease;
-
-        &:hover {
-            background: blue;
-        }
-
-        &:active {
-            transform: translateY(1px);
-        }
-    }
-}
 </style>
