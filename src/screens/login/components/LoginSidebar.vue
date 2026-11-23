@@ -1,17 +1,8 @@
 <script setup lang="ts">
-const integratedSystems = [
-    {name: 'SIGAA', details: 'Gestão Acadêmica', active: true},
-    {name: 'SIPAC', details: 'Administrativo'},
-    {name: 'SIGRH', details: 'Recursos Humanos'},
-    {name: 'SIGEleição', details: 'Processos Eleitorais'},
-    {name: 'SIGAdmin', details: 'Admin. e Comunicação'}
-];
+import { getRegisterLinks, getSystemsLinks } from "../login.parser.ts";
 
-const registrationProfiles = [
-    {label: 'Aluno', kind: 'student'},
-    {label: 'Prof. / Func.', kind: 'staff'},
-    {label: 'Familiares', kind: 'family'}
-];
+const integratedSystems = getSystemsLinks();
+const registrationProfiles = getRegisterLinks();
 </script>
 
 <template>
@@ -27,9 +18,9 @@ const registrationProfiles = [
             <h2 class="systems-title">Sistemas Integrados</h2>
             <ul class="systems-list">
                 <li v-for="system in integratedSystems">
-                    <a class="system-item" :class="{ active: system.active }">
+                    <a :href="system.href" class="system-item" :class="{ active: system.active }">
                         <strong> {{ system.name }} </strong>
-                        <span> {{ system.details }} </span>
+                        <span> {{ system.description }} </span>
                     </a>
                 </li>
             </ul>
@@ -38,7 +29,7 @@ const registrationProfiles = [
             <h2 class="registration-title">Novo Usuário</h2>
             <ul class="registration-list">
                 <li v-for="profile in registrationProfiles">
-                    <a class="profile-item"> {{ profile.label }} </a>
+                    <a :href="profile.link" class="profile-item"> {{ profile.name }} </a>
                 </li>
             </ul>
         </nav>

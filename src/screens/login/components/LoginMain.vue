@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref} from "vue";
-import { setLoginInput, setPasswordInput, submitLoginInput } from "@/screens/login/login.parser.ts";
+import { setLoginInput, setPasswordInput, submitLoginInput, getRecoveryLinks } from "../login.parser.ts";
 
 const user = ref("");
 const password = ref("");
+
+const recovery = getRecoveryLinks();
 
 function clickSubmit() {
     setLoginInput(user.value);
@@ -29,8 +31,8 @@ function clickSubmit() {
             </div>
             <button class="submit-btn" type="submit">Entrar</button>
             <nav class="login-links">
-                <a class="text-link">Esqueceu o login?</a>
-                <a class="text-link">Esqueceu a senha?</a>
+                <a :href="recovery.forgotLogin" class="text-link">Esqueceu o login?</a>
+                <a :href="recovery.forgotPassword" class="text-link">Esqueceu a senha?</a>
             </nav>
         </form>
         <footer class="login-footer">SIGAA • STI UFCG • © 2006–2026 UFRN</footer>

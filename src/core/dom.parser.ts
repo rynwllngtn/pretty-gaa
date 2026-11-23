@@ -18,6 +18,10 @@ export function getOriginalText(target: string | Element | null, root: ParentNod
     return element?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
 }
 
+export function getOriginalHref(selector: string): string | undefined {
+    return queryOriginalDom<HTMLAnchorElement>(selector)?.href;
+}
+
 export function setOriginalInputValue(field: HTMLInputElement | null, value: string) {
     if (!field) return false;
     field.value = value;
