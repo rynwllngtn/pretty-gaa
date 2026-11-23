@@ -4,6 +4,8 @@ import App from '../App.vue';
 import { detectPage } from '../core/detector.ts';
 import { getScreen } from "@/screens";
 
+import '../style.css';
+
 function waitForBody(): Promise<void> {
     if (document.readyState !== 'loading' && document.body) {
         return Promise.resolve();
