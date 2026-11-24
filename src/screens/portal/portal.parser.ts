@@ -1,19 +1,42 @@
-import { clickOriginalSubmit, getOriginalText, queryAllOriginalDom } from '@/core/dom.parser.ts';
+import { getOriginalHref, getOriginalText, queryAllOriginalDom } from '@/core/dom.parser.ts';
 
-const studentNamePath = '#perfil-docente .info-docente .nome';
-const studentNameFallbackPath = '#info-usuario .usuario span';
-export function getStudentName() {
-    return getOriginalText(studentNamePath) || getOriginalText(studentNameFallbackPath);
+const sidebarLinkPaths = {
+    mailbox: 'a[href*="abrirCaixaPostal"]',
+    switchRole: 'a[href*="escolhaVinculo"]',
+    logout: '.sair-sistema a',
+};
+export function getSidebarLinks() {
+    return {
+        mailbox: getOriginalHref(sidebarLinkPaths.mailbox),
+        switchRole: getOriginalHref(sidebarLinkPaths.switchRole),
+        logout: getOriginalHref(sidebarLinkPaths.logout),
+    };
 }
 
-const semesterPath = '#info-usuario .periodo-atual strong';
-export function getCurrentSemester() {
-    return getOriginalText(semesterPath);
+const profileLinkPath = '#perfil-docente a';
+function clickProfileAction(label: string) {
+    const target = label.toLowerCase();
+    const link = queryAllOriginalDom<HTMLAnchorElement>(profileLinkPath).find(
+        (a) => getOriginalText(a).toLowerCase() === target,
+    );
+    if (!link) return false;
+    link.click();
+    return true;
+}
+export function openAcademicIndices() {
+    return clickProfileAction('Detalhar');
+}
+export function openPersonalData() {
+    return clickProfileAction('Meus Dados Pessoais');
 }
 
-const logoutPath = '.sair-sistema a';
-export function clickLogout() {
-    clickOriginalSubmit(logoutPath);
+const homeLinkPaths = {
+    previousCourses: 'a[href*="turmas.jsf"]',
+};
+export function getHomeLinks() {
+    return {
+        previousCourses: getOriginalHref(homeLinkPaths.previousCourses),
+    };
 }
 
 const courseCellPath = '#turmas-portal td.descricao';

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { PortalTab } from "../PortalScreen.vue";
+import { getSidebarLinks, openAcademicIndices } from "../portal.parser.ts";
 
 const activeTab = defineModel<PortalTab>({ required: true });
 
-const recentLinks = [
-    'Consultar Minhas Notas',
-    'Emitir Atestado de Matrícula'
-];
+const recentLinks: any = [];
+
+const navigationLinks = getSidebarLinks();
 
 const tabs: { id: PortalTab; label: string }[] = [
     { id: 'home', label: 'Início' },
@@ -67,8 +67,8 @@ const menuGroups = [
                             {{ tab.label }}
                         </button>
                     </li>
-                    <li><button type="button" class="navigation-item">Índices Acadêmicos</button></li>
-                    <li><a class="navigation-item">Caixa Postal</a></li>
+                    <li><button @click="openAcademicIndices" type="button" class="navigation-item">Índices Acadêmicos</button></li>
+                    <li><a :href="navigationLinks.mailbox" class="navigation-item">Caixa Postal</a></li>
                 </ul>
             </nav>
             <nav class="sigaa-menus">
@@ -93,10 +93,10 @@ const menuGroups = [
         </div>
         <footer class="sidebar-footer">
             <div class="footer-actions">
-                <a class="footer-action">
+                <a :href="navigationLinks.switchRole" class="footer-action">
                     Alterar vínculo
                 </a>
-                <a href="/sigaa/logar.do?dispatch=logOff" class="footer-action danger">
+                <a :href="navigationLinks.logout" class="footer-action danger">
                     Sair
                 </a>
             </div>

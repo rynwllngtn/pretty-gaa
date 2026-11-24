@@ -1,12 +1,7 @@
 <script setup lang="ts">
-const institutionalItems = [
-    { label: 'Matrícula', value: '224110082' },
-    { label: 'Curso', value: 'QUÍMICA (LIC) - N/CFP - CAJAZEIRAS' },
-    { label: 'Nível', value: 'GRADUAÇÃO' },
-    { label: 'Status', value: 'ATIVO' },
-    { label: 'E-Mail', value: 'ryan.wellington@estudante.ufcg.edu.br' },
-    { label: 'Entrada', value: '2024.1' },
-];
+import { getInstitutionalInfo, openPersonalData } from "../portal.parser.ts";
+
+const institutionalItems = getInstitutionalInfo();
 
 const integrationItems = [
     { label: 'CH. Obrigatória Pendente', value: '1350' },
@@ -25,7 +20,7 @@ const progressPercent = 44;
                 <h1>Dados Institucionais</h1>
                 <p>Informações do seu vínculo acadêmico atual.</p>
             </div>
-            <button type="button" class="institutional-action">Meus Dados Pessoais</button>
+            <button @click="openPersonalData" type="button" class="institutional-action">Meus Dados Pessoais</button>
         </header>
 
         <div class="institutional-grid">

@@ -1,26 +1,9 @@
 <script setup lang="ts">
-const courses = [
-    {
-        name: 'Prática de Ensino de Química I',
-        location: 'CALB BIOPROCESSOs',
-        schedule: '5M2 5N12',
-    },
-    {
-        name: 'Química Analítica Quantitativa',
-        location: 'LAB QUÍMICA GERAL',
-        schedule: '2M34 3N1234',
-    },
-    {
-        name: 'Química Experimental para a Educação Básica',
-        location: 'Lab Produtos Naturais',
-        schedule: '5N34',
-    },
-    {
-        name: 'Química Inorgânica Descritiva',
-        location: 'CA02 - 205',
-        schedule: '2N34 4N12',
-    },
-];
+import { getCourses, getHomeLinks } from "../portal.parser.ts";
+
+const homeLinks = getHomeLinks();
+
+const courses = getCourses();
 
 const activities = [
     {
@@ -56,11 +39,11 @@ const updates = [
         <section class="portal-courses">
             <header class="section-header">
                 <h2>Turmas do Semestre</h2>
-                <a class="courses-history">Ver turmas anteriores</a>
+                <a :href="homeLinks.previousCourses" class="courses-history">Ver turmas anteriores</a>
             </header>
             <ul v-if="courses.length" class="courses-grid">
                 <li v-for="course in courses">
-                    <button type="button" class="course-card">
+                    <button @click="course.open" type="button" class="course-card">
                         <strong class="course-title"> {{ course.name }} </strong>
                         <span class="course-info">
                             <span> {{ course.location }} </span>
