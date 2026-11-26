@@ -5,13 +5,10 @@ import PortalHeader from './components/PortalHeader.vue';
 import PortalHome from './components/PortalHome.vue';
 import PortalInstitutional from './components/PortalInstitutional.vue';
 import PortalSidebar from './components/PortalSidebar.vue';
-import {getIntegrationInfo} from "@/screens/portal/portal.parser.ts";
 
 export type PortalTab = 'home' | 'institutional';
 
 const activeTab = ref<PortalTab>('home');
-
-getIntegrationInfo();
 </script>
 
 <template>

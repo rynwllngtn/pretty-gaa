@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { getInstitutionalInfo, openPersonalData } from "../portal.parser.ts";
+import {getInstitutionalInfo, getIntegrationInfo, openPersonalData, getIntegrationProgress } from "../portal.parser.ts";
 
 const institutionalItems = getInstitutionalInfo();
-
-const integrationItems = [
-    { label: 'CH. Obrigatória Pendente', value: '1350' },
-    { label: 'CH. Optativa Pendente', value: '90' },
-    { label: 'CH. Complementar Pendente', value: '210' },
-    { label: 'CH. Total Currículo', value: '2940' },
-];
-
-const progressPercent = 44;
+const integrationItems = getIntegrationInfo();
+const progressPercent = getIntegrationProgress();
 </script>
 
 <template>
@@ -22,7 +15,6 @@ const progressPercent = 44;
             </div>
             <button @click="openPersonalData" type="button" class="institutional-action">Meus Dados Pessoais</button>
         </header>
-
         <div class="institutional-grid">
             <section class="institutional-card">
                 <header class="card-header">
@@ -38,7 +30,7 @@ const progressPercent = 44;
             <section class="institutional-card">
                 <header class="card-header">
                     <h2>Integralizações</h2>
-                    <strong class="integration-percent"> {{ progressPercent }}% integralizado</strong>
+                    <strong class="integration-percent"> {{ progressPercent }}% Integralizado</strong>
                 </header>
                 <dl>
                     <div v-for="item in integrationItems" class="institutional-row">

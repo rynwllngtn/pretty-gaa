@@ -1,4 +1,20 @@
-import { getOriginalHref, getOriginalText, queryAllOriginalDom } from '@/core/dom.parser.ts';
+import { getOriginalHref, getOriginalText, queryAllOriginalDom, queryOriginalDom } from '@/core/dom.parser.ts';
+
+const headerPaths = {
+    studentName: '#perfil-docente .info-docente .nome',
+    semester: '#info-usuario .periodo-atual strong',
+    unit: '#info-usuario .unidade',
+    avatar: '#perfil-docente .foto img',
+};
+export function getHeaderInfo() {
+    return {
+        studentName: getOriginalText(headerPaths.studentName),
+        semester: getOriginalText(headerPaths.semester),
+        unit: getOriginalText(headerPaths.unit),
+        avatarUrl: queryOriginalDom<HTMLImageElement>(headerPaths.avatar)?.src ?? '/sigaa/img/no_picture.png',
+        progressPercent: getIntegrationProgress(),
+    };
+}
 
 const sidebarLinkPaths = {
     mailbox: 'a[href*="abrirCaixaPostal"]',
@@ -39,15 +55,14 @@ export function getHomeLinks() {
     };
 }
 
-const courseCellPath = '#turmas-portal td.descricao';
+const courseRowPath = '#turmas-portal tbody tr';
 export function getCourses() {
-    const cells = queryAllOriginalDom<HTMLTableCellElement>(courseCellPath);
+    const rows = queryAllOriginalDom<HTMLTableCellElement>(courseRowPath);
     const courses = [];
 
-    for (const cell of cells) {
-        const row = cell.parentElement;
-        const link = cell.querySelector<HTMLAnchorElement>('a');
-        if (!row || !link) continue;
+    for (const row of rows) {
+        const link = queryOriginalDom<HTMLAnchorElement>('td.descricao a', row);
+        if (!link) continue;
 
         const infoCells = row.querySelectorAll<HTMLTableCellElement>('td.info');
         courses.push({
@@ -62,13 +77,16 @@ export function getCourses() {
 }
 
 const profileBlockPath = '#perfil-docente [id="agenda-docente"]';
-export function getInstitutionalInfo() {
+function getProfileTableBlock() {
     const blocks = queryAllOriginalDom<HTMLElement>(profileBlockPath);
-    const tableBlock = blocks.find((block) => Boolean(block.querySelector('table')));
-    if (!tableBlock) return [];
+    return blocks.find((block) => Boolean(block.querySelector('table'))) ?? null;
+}
 
-    const rows = queryAllOriginalDom<HTMLTableRowElement>(':scope > table > tbody > tr', tableBlock);
-    const info = [];
+function readProfileTable(table: HTMLTableElement | undefined) {
+    if (!table) return [];
+
+    const rows = queryAllOriginalDom<HTMLTableRowElement>(':scope > tbody > tr', table);
+    const items = [];
 
     for (const row of rows) {
         const cells = Array.from(row.children).filter((el) => el.tagName === 'TD');
@@ -78,8 +96,34 @@ export function getInstitutionalInfo() {
         const value = getOriginalText(cells[1] ?? null);
         if (!label || !value) continue;
 
-        info.push({ label, value });
+        items.push({ label, value });
     }
 
-    return info;
+    return items;
+}
+
+export function getInstitutionalInfo() {
+    const tableBlock = getProfileTableBlock();
+    if (!tableBlock) return [];
+
+    const tables = queryAllOriginalDom<HTMLTableElement>('table', tableBlock);
+    return readProfileTable(tables[0]);
+}
+
+export function getIntegrationInfo() {
+    const tableBlock = getProfileTableBlock();
+    if (!tableBlock) return [];
+
+    const tables = queryAllOriginalDom<HTMLTableElement>('table', tableBlock);
+    return readProfileTable(tables[2]);
+}
+
+export function getIntegrationProgress() {
+    const tableBlock = getProfileTableBlock();
+    if (!tableBlock) return 0;
+
+    const cell = queryAllOriginalDom<HTMLTableCellElement>('td', tableBlock).find(
+        (td) => !td.querySelector('td') && getOriginalText(td).includes('Integralizado'),
+    );
+    return parseFloat(getOriginalText(cell ?? null)) ?? 0;
 }

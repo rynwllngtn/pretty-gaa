@@ -1,25 +1,22 @@
 <script setup lang="ts">
-const studentName = 'Ryan Wellington';
-const course = 'Química (Lic.)';
-const unit = 'CFP - Centro de Formação de Professores';
-const avatarUrl = '/sigaa/img/no_picture.png';
-const progressPercent = 44;
-const semester = '2026.2';
+import { getHeaderInfo } from "../portal.parser.ts";
+
+const header = getHeaderInfo();
 </script>
 
 <template>
     <header class="portal-header">
         <div class="header-session">
             <span class="session-label">Semestre</span>
-            <strong class="session-value">{{ semester }}</strong>
+            <strong class="session-value"> {{ header.semester }} </strong>
         </div>
         <div class="header-user">
             <div class="user-info">
-                <strong class="user-greeting">Olá, {{ studentName }}</strong>
-                <p class="user-course">{{ course }} • {{ unit }}</p>
+                <strong class="user-greeting">Olá, {{ header.studentName }}</strong>
+                <p class="user-course"> {{ header.unit }} </p>
             </div>
-            <div class="user-progress" :style="{ '--progress': progressPercent }">
-                <img class="user-avatar" :src="avatarUrl" alt="Foto do usuário"/>
+            <div class="user-progress" :style="{ '--progress': header.progressPercent }">
+                <img class="user-avatar" :src="header.avatarUrl" alt="Foto do usuário"/>
             </div>
         </div>
     </header>
