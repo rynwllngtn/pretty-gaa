@@ -29,6 +29,66 @@ export function getSidebarLinks() {
     };
 }
 
+export type MenuItem = {
+    label: string;
+    open?: () => void;
+    items?: MenuItem[];
+};
+
+function getSubMenuId(element: Element) {
+    const handler = element.getAttribute('onmouseover') ?? '';
+    return handler.split("'").find((part) => part.startsWith('cmSubMenuID')) ?? null;
+}
+
+function triggerThemeMenuItem(item: HTMLElement) {
+    const options = { bubbles: true, cancelable: true, button: 0 };
+    item.dispatchEvent(new MouseEvent('mouseover', options));
+    item.dispatchEvent(new MouseEvent('mousedown', options));
+    item.dispatchEvent(new MouseEvent('mouseup', options));
+}
+
+function readSubMenu(menuId: string | null): MenuItem[] {
+    if (!menuId) return [];
+
+    const rows = queryAllOriginalDom<HTMLTableRowElement>(`#${menuId} tr.ThemeOfficeMenuItem`);
+    const items: MenuItem[] = [];
+
+    for (const row of rows) {
+        const label = getOriginalText('.ThemeOfficeMenuItemText', row);
+        if (label) {
+            items.push({ label, open: () => triggerThemeMenuItem(row) });
+            continue;
+        }
+
+        const folder = getOriginalText('.ThemeOfficeMenuFolderText', row);
+        const children = readSubMenu(getSubMenuId(row));
+        if (folder && children.length) {
+                items.push({ label: folder, items: children });
+        }
+    }
+
+    return items;
+}
+
+const mainMenuItemPath = 'table.ThemeOfficeMenu td.ThemeOfficeMainItem';
+export function getMenuGroups() {
+    const mainItems = queryAllOriginalDom<HTMLTableCellElement>(mainMenuItemPath);
+    const groups = [];
+
+    for (const mainItem of mainItems) {
+        const name = getOriginalText('.ThemeOfficeMainFolderText', mainItem);
+        const subMenuId = getSubMenuId(mainItem);
+        if (!name || !subMenuId) continue;
+
+        const items = readSubMenu(subMenuId);
+        if (!items.length) continue;
+
+        groups.push( { name, items } );
+    }
+
+    return groups;
+}
+
 const profileLinkPath = '#perfil-docente a';
 function clickProfileAction(label: string) {
     const target = label.toLowerCase();
@@ -74,6 +134,54 @@ export function getCourses() {
     }
 
     return courses;
+}
+
+const activityRowPath = '#avaliacao-portal tbody tr';
+export function getActivities() {
+    const rows = queryAllOriginalDom<HTMLTableRowElement>(activityRowPath);
+    const activities = [];
+
+    for (const row of rows) {
+        const [image, dateCell, detailCell] = Array.from(row.cells);
+        if (!dateCell || !detailCell) continue;
+
+        const [date = '', rawCountdown = ''] = getOriginalText(dateCell).split('(');
+        const countdown = rawCountdown.replace(')', '').trim();
+
+        const container = queryOriginalDom('strong', detailCell)?.parentElement;
+        if (!container) continue;
+
+        const nodes = Array.from(container.childNodes);
+        const course = nodes.slice(0, 1).map((node) => node.textContent).join('').replace(/\n/g, '');
+        const detail = nodes.slice(2).map((node) => node.textContent).join('').replace(/\n/g, '');
+        if (!date || !course) continue;
+
+        activities.push({ date, countdown, course, detail });
+    }
+
+    return activities;
+}
+
+const updateTablePath = '#atualizacoes-turma table';
+export function getUpdates() {
+    const tables = queryAllOriginalDom<HTMLTableElement>(updateTablePath);
+    const updates = [];
+
+    for (const table of tables) {
+        const rows = queryAllOriginalDom<HTMLTableRowElement>('tbody tr', table);
+        const headerRow = rows[0];
+        const bodyRow = rows[1];
+        if (!headerRow || !bodyRow) continue;
+
+        const date = getOriginalText(headerRow).split(' -')[0] ?? '';
+        const course = getOriginalText('a', headerRow);
+        const text = getOriginalText(bodyRow);
+        if (!date || !course || !text) continue;
+
+        updates.push({ date, course, text });
+    }
+
+    return updates;
 }
 
 const profileBlockPath = '#perfil-docente [id="agenda-docente"]';

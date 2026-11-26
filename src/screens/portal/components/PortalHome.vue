@@ -1,37 +1,10 @@
 <script setup lang="ts">
-import { getCourses, getHomeLinks } from "../portal.parser.ts";
+import { getActivities, getCourses, getHomeLinks, getUpdates } from "../portal.parser.ts";
 
 const homeLinks = getHomeLinks();
-
 const courses = getCourses();
-
-const activities = [
-    {
-        date: '25/11',
-        countdown: 'em 4 dias',
-        course: 'Química Inorgânica Descritiva',
-        detail: 'Avaliação: 2ª Avaliação',
-    },
-    {
-        date: '26/11',
-        countdown: 'em 5 dias',
-        course: 'Química Experimental para a Educação Básica',
-        detail: 'Avaliação: 1ª Avaliação',
-    },
-];
-
-const updates = [
-    {
-        date: '29/10',
-        course: 'Química Analítica Quantitativa',
-        text: 'Novo Tópico de Aula: 12 dia de aula',
-    },
-    {
-        date: '28/10',
-        course: 'Química Inorgânica Descritiva',
-        text: 'Novo Tópico de Aula: Não Haverá Aula',
-    },
-];
+const activities = getActivities();
+const updates = getUpdates();
 </script>
 
 <template>

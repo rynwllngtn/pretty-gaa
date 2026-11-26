@@ -1,37 +1,19 @@
 <script setup lang="ts">
 import type { PortalTab } from "../PortalScreen.vue";
-import { getSidebarLinks, openAcademicIndices } from "../portal.parser.ts";
+import { getMenuGroups, getSidebarLinks, openAcademicIndices } from "../portal.parser.ts";
+import PortalMenuList from "./PortalMenuList.vue";
 
 const activeTab = defineModel<PortalTab>({ required: true });
 
-const recentLinks: any = [];
-
 const navigationLinks = getSidebarLinks();
+const menuGroups = getMenuGroups();
 
 const tabs: { id: PortalTab; label: string }[] = [
     { id: 'home', label: 'Início' },
     { id: 'institutional', label: 'Dados Institucionais' }
 ];
 
-const menuGroups = [
-    {
-        name: 'Ensino',
-        items: [
-            'Consultar Minhas Notas',
-            'Emitir Atestado de Matrícula',
-            'Emitir Histórico',
-            'Emitir Declaração de Vínculo',
-        ],
-    },
-    {
-        name: 'Pesquisa / Extensão',
-        items: ['Projetos de Pesquisa', 'Ações de Extensão'],
-    },
-    {
-        name: 'Outros',
-        items: ['Módulos', 'Abrir Chamado', 'Alterar Senha'],
-    }
-];
+const recentLinks: any = [];
 </script>
 
 <template>
@@ -79,13 +61,7 @@ const menuGroups = [
                             <summary class="menu-group">
                                 {{ group.name }}
                             </summary>
-                            <ul class="group-list">
-                                <li v-for="sub in group.items">
-                                    <button type="button" class="group-item">
-                                        {{ sub }}
-                                    </button>
-                                </li>
-                            </ul>
+                            <PortalMenuList :items="group.items"/>
                         </details>
                     </li>
                 </ul>
@@ -217,8 +193,7 @@ const menuGroups = [
 
         .recent-list,
         .navigation-list,
-        .menus-list,
-        .group-list {
+        .menus-list {
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -279,28 +254,6 @@ const menuGroups = [
             .menu-details[open] > & {
                 background: var(--bg-sidebar-hover);
                 border-color: var(--border-on-dark-strong);
-            }
-        }
-
-        .group-list {
-            margin-top: 6px;
-            padding-left: 10px;
-
-            .group-item {
-                width: 100%;
-                padding: 8px 10px;
-                font-size: 12px;
-                text-align: left;
-                color: var(--text-on-dark-muted);
-                background: transparent;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-
-                &:hover {
-                    color: var(--text-on-dark);
-                    background: var(--bg-sidebar-hover);
-                }
             }
         }
     }
