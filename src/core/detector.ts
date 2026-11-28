@@ -22,7 +22,7 @@ const PagesRegistry: PagesInterface[] = [
     {
         page: Pages.virtualClass,
         matches: doc =>
-            Boolean(doc.getElementById('barraDireita'))
+            Boolean(doc.getElementById('barraDireita') && doc.getElementById('formAva'))
     }
 ]
 
